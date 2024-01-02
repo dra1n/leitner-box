@@ -5,7 +5,7 @@ const range = (count: number) => {
 };
 
 export const buildRepeatLessons = (count: number, repetitions: number) => {
-  const labels = [];
+  const lessons = [];
 
   for (let i = 0; i < count; i++) {
     const a = [];
@@ -14,10 +14,10 @@ export const buildRepeatLessons = (count: number, repetitions: number) => {
       a.push((i + fib(j)) % count);
     }
 
-    labels.push(a);
+    lessons.push(a);
   }
 
-  return labels;
+  return lessons;
 };
 
 export const buildEmptyDecks = (count: number) => {
