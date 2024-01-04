@@ -29,5 +29,102 @@ describe('createLeitnerBox', () => {
       expect(lastLessonDeck.cards).toEqual([]);
       expect(lastLessonDeck.repeatOn).toEqual([9, 1, 4, 8]);
     });
+
+    it('should have current lesson set to 0', () => {
+      const leinterBox = createLeitnerBox();
+
+      expect(leinterBox.currentLesson).toEqual(0);
+    });
+  });
+
+  describe('with predefined parameters', () => {
+    describe('current lesson', () => {
+      it('sets current lesson', () => {
+        const leinterBox = createLeitnerBox({ currentLesson: 5 });
+
+        expect(leinterBox.currentLesson).toEqual(5);
+      });
+    });
+
+    describe('repetitions', () => {
+      it('is used to create leitner decks', () => {
+        const leinterBox = createLeitnerBox({ repetitions: 2 });
+
+        const firstLessonDeck = leinterBox.decks.lessons[0];
+        const lastLessonDeck =
+          leinterBox.decks.lessons[leinterBox.decks.lessons.length - 1];
+
+        expect(firstLessonDeck.cards).toEqual([]);
+        expect(firstLessonDeck.repeatOn).toEqual([0, 2, 5]);
+
+        expect(lastLessonDeck.cards).toEqual([]);
+        expect(lastLessonDeck.repeatOn).toEqual([5, 1, 4]);
+      });
+
+      it('is accessible via property', () => {
+        const leinterBox = createLeitnerBox({ repetitions: 2 });
+
+        expect(leinterBox.repetitions).toEqual(2);
+      });
+    });
+
+    describe('initial decks', () => {
+      it('takes unknown deck as the first item in the array', () => {
+        const initialDecks = [
+          ['unk', 'nown'],
+          ['a', 'b'],
+          ['c', 'd'],
+          [],
+          [],
+          ['e'],
+          ['f', 'g'],
+          ['lea', 'rnd']
+        ];
+        const leinterBox = createLeitnerBox({ initialDecks, repetitions: 2 });
+
+        expect(leinterBox.decks.unknown).toEqual(['unk', 'nown']);
+      });
+
+      it('takes learned deck as the last item in the array', () => {
+        const initialDecks = [
+          ['unk', 'nown'],
+          ['a', 'b'],
+          ['c', 'd'],
+          [],
+          [],
+          ['e'],
+          ['f', 'g'],
+          ['lea', 'rnd']
+        ];
+        const leinterBox = createLeitnerBox({ initialDecks, repetitions: 2 });
+
+        expect(leinterBox.decks.learned).toEqual(['lea', 'rnd']);
+      });
+
+      it('takes decks for repetition as middle part of the array', () => {
+        /* The size of the decks for repetition should equal `fib(repetitions) + 1` */
+        const initialDecks = [
+          ['unk', 'nown'],
+          ['a', 'b'],
+          ['c', 'd'],
+          [],
+          [],
+          ['e'],
+          ['f', 'g'],
+          ['lea', 'rnd']
+        ];
+        const leinterBox = createLeitnerBox({ initialDecks, repetitions: 2 });
+
+        const firstLessonDeck = leinterBox.decks.lessons[0];
+        const lastLessonDeck =
+          leinterBox.decks.lessons[leinterBox.decks.lessons.length - 1];
+
+        expect(firstLessonDeck.cards).toEqual(['a', 'b']);
+        expect(firstLessonDeck.repeatOn).toEqual([0, 2, 5]);
+
+        expect(lastLessonDeck.cards).toEqual(['f', 'g']);
+        expect(lastLessonDeck.repeatOn).toEqual([5, 1, 4]);
+      });
+    });
   });
 });
