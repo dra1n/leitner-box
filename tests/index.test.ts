@@ -1,4 +1,10 @@
-import { LeitnerBox, createLeitnerBox, setCurrentLesson } from '../src';
+import {
+  LeitnerBox,
+  addToLearned,
+  addToUnknown,
+  createLeitnerBox,
+  setCurrentLesson
+} from '../src';
 
 describe('API', () => {
   describe('createLeitnerBox', () => {
@@ -131,25 +137,107 @@ describe('API', () => {
   });
 
   describe('setCurrentLesson', () => {
-    let initialLeinterBox: LeitnerBox;
+    let initialLeitnerBox: LeitnerBox;
 
     beforeEach(() => {
-      initialLeinterBox = createLeitnerBox({
+      initialLeitnerBox = createLeitnerBox({
         currentLesson: 0,
         repetitions: 3
       });
     });
 
     it('updates current lesson', () => {
-      const leitnerBox = setCurrentLesson(initialLeinterBox, 4);
+      const leitnerBox = setCurrentLesson(initialLeitnerBox, 4);
 
       expect(leitnerBox.currentLesson).toEqual(4);
     });
 
     it('returns new leitner box', () => {
-      const leitnerBox = setCurrentLesson(initialLeinterBox, 4);
+      const leitnerBox = setCurrentLesson(initialLeitnerBox, 4);
 
-      expect(leitnerBox === initialLeinterBox).toBeFalsy();
+      expect(leitnerBox === initialLeitnerBox).toBeFalsy();
+    });
+  });
+
+  describe('addToUnknown', () => {
+    let initialLeitnerBox: LeitnerBox;
+
+    beforeEach(() => {
+      initialLeitnerBox = createLeitnerBox({
+        currentLesson: 0,
+        repetitions: 3
+      });
+    });
+
+    it('adds card to unknown list', () => {
+      const newCard = 'a';
+
+      const leitnerBox = addToUnknown(initialLeitnerBox, newCard);
+
+      expect(leitnerBox.decks.unknown).toEqual(['a']);
+    });
+
+    it('adds card to the end of the unknown list', () => {
+      initialLeitnerBox = createLeitnerBox({
+        currentLesson: 0,
+        initialDecks: [['a'], [], [], []],
+        repetitions: 1
+      });
+
+      const newCard = 'b';
+
+      const leinterBox = addToUnknown(initialLeitnerBox, newCard);
+
+      expect(leinterBox.decks.unknown).toEqual(['a', 'b']);
+    });
+
+    it('returns new leitner box', () => {
+      const newCard = 'a';
+
+      const leitnerBox = addToUnknown(initialLeitnerBox, newCard);
+
+      expect(leitnerBox === initialLeitnerBox).toBeFalsy();
+    });
+  });
+
+  describe('addToLearned', () => {
+    let initialLeitnerBox: LeitnerBox;
+
+    beforeEach(() => {
+      initialLeitnerBox = createLeitnerBox({
+        currentLesson: 0,
+        repetitions: 3
+      });
+    });
+
+    it('adds card to learned list', () => {
+      const newCard = 'a';
+
+      const leitnerBox = addToLearned(initialLeitnerBox, newCard);
+
+      expect(leitnerBox.decks.learned).toEqual(['a']);
+    });
+
+    it('adds card to the end of the learned list', () => {
+      initialLeitnerBox = createLeitnerBox({
+        currentLesson: 0,
+        initialDecks: [[], [], [], ['a']],
+        repetitions: 1
+      });
+
+      const newCard = 'b';
+
+      const leinterBox = addToLearned(initialLeitnerBox, newCard);
+
+      expect(leinterBox.decks.learned).toEqual(['a', 'b']);
+    });
+
+    it('returns new leitner box', () => {
+      const newCard = 'a';
+
+      const leitnerBox = addToLearned(initialLeitnerBox, newCard);
+
+      expect(leitnerBox === initialLeitnerBox).toBeFalsy();
     });
   });
 });

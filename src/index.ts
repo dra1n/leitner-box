@@ -1,5 +1,5 @@
 import { fib, buildEmptyDecks, buildRepeatLessons } from './utils';
-import { lensProp, set } from 'ramda';
+import { append, lensPath, lensProp, set, over } from 'ramda';
 
 type integer = number;
 
@@ -62,4 +62,16 @@ export const setCurrentLesson = (
   );
 
   return set(currentLessonLens, currentLesson, box);
+};
+
+export const addToUnknown = (box: LeitnerBox, card: unknown): LeitnerBox => {
+  const unknownLens = lensPath(['decks', 'unknown']);
+
+  return over<LeitnerBox, unknown[]>(unknownLens, append(card), box);
+};
+
+export const addToLearned = (box: LeitnerBox, card: unknown): LeitnerBox => {
+  const learnedLens = lensPath(['decks', 'learned']);
+
+  return over<LeitnerBox, unknown[]>(learnedLens, append(card), box);
 };
