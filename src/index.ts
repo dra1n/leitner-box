@@ -1,4 +1,5 @@
 import { fib, buildEmptyDecks, buildRepeatLessons } from './utils';
+import { lensProp, set } from 'ramda';
 
 type integer = number;
 
@@ -19,7 +20,7 @@ interface LeitnerDecks {
   lessons: Array<LeitnerLesson>;
 }
 
-interface LeitnerBox {
+export interface LeitnerBox {
   count: number;
   repetitions: number;
   currentLesson: number;
@@ -50,4 +51,15 @@ export const createLeitnerBox = ({
     currentLesson,
     decks
   };
+};
+
+export const setCurrentLesson = (
+  box: LeitnerBox,
+  currentLesson: number
+): LeitnerBox => {
+  const currentLessonLens = lensProp<LeitnerBox, 'currentLesson'>(
+    'currentLesson'
+  );
+
+  return set(currentLessonLens, currentLesson, box);
 };
