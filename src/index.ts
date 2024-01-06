@@ -1,20 +1,20 @@
 import { fib, buildEmptyDecks, buildRepeatLessons } from './utils';
-import { append, lensPath, lensProp, set, over } from 'ramda';
+import * as R from 'ramda';
 
-type integer = number;
+export type integer = number;
 
-interface LeitnerBoxConfig {
+export interface LeitnerBoxConfig {
   repetitions?: integer;
   currentLesson?: integer;
   initialDecks?: Array<Array<unknown>>;
 }
 
-interface LeitnerLesson {
+export interface LeitnerLesson {
   repeatOn: Array<integer>;
   cards: Array<unknown>;
 }
 
-interface LeitnerDecks {
+export interface LeitnerDecks {
   unknown: Array<unknown>;
   learned: Array<unknown>;
   lessons: Array<LeitnerLesson>;
@@ -25,6 +25,10 @@ export interface LeitnerBox {
   repetitions: number;
   currentLesson: number;
   decks: LeitnerDecks;
+}
+
+export interface CardIdentity {
+  (card: unknown): boolean;
 }
 
 export const createLeitnerBox = ({
@@ -57,21 +61,96 @@ export const setCurrentLesson = (
   box: LeitnerBox,
   currentLesson: number
 ): LeitnerBox => {
-  const currentLessonLens = lensProp<LeitnerBox, 'currentLesson'>(
+  const currentLessonLens = R.lensProp<LeitnerBox, 'currentLesson'>(
     'currentLesson'
   );
 
-  return set(currentLessonLens, currentLesson, box);
+  return R.set(currentLessonLens, currentLesson, box);
 };
 
 export const addToUnknown = (box: LeitnerBox, card: unknown): LeitnerBox => {
-  const unknownLens = lensPath(['decks', 'unknown']);
+  const unknownLens = R.lensPath(['decks', 'unknown']);
 
-  return over<LeitnerBox, unknown[]>(unknownLens, append(card), box);
+  return R.over<LeitnerBox, unknown[]>(unknownLens, R.append(card), box);
 };
 
 export const addToLearned = (box: LeitnerBox, card: unknown): LeitnerBox => {
-  const learnedLens = lensPath(['decks', 'learned']);
+  const learnedLens = R.lensPath(['decks', 'learned']);
 
-  return over<LeitnerBox, unknown[]>(learnedLens, append(card), box);
+  return R.over<LeitnerBox, unknown[]>(learnedLens, R.append(card), box);
+};
+
+const lensMatchIdentity = (identity: CardIdentity) =>
+  R.lens(R.find(identity), (val, arr, idx = R.findIndex(identity, arr)) =>
+    R.update(idx > -1 ? idx : R.length(arr), val, arr)
+  );
+
+const moveToSection = (
+  box: LeitnerBox,
+  identity: CardIdentity,
+  addToSection: (box: LeitnerBox, card: unknown) => LeitnerBox
+): LeitnerBox => {
+  let card: unknown;
+  let updatedBox: LeitnerBox;
+
+  const unknownLens = R.lensPath(['decks', 'unknown']);
+  const learnedLens = R.lensPath(['decks', 'learned']);
+  const lessonsLens = (index: number) =>
+    R.lensPath(['decks', 'lessons', index, 'cards']);
+
+  const findInUnknownLens = R.compose(unknownLens, lensMatchIdentity(identity));
+  const findInLearnedLens = R.compose(learnedLens, lensMatchIdentity(identity));
+  const findInLessonsLens = (index: number) =>
+    R.compose(lessonsLens(index), lensMatchIdentity(identity));
+
+  // Search for card in 'unknown'
+  card = R.view(findInUnknownLens, box);
+
+  if (card) {
+    updatedBox = R.over<LeitnerBox, unknown[]>(
+      unknownLens,
+      R.reject(identity),
+      box
+    );
+
+    return addToSection(updatedBox, card);
+  }
+
+  // Search for card in 'learned'
+  card = R.view(findInLearnedLens, box);
+
+  if (card) {
+    updatedBox = R.over<LeitnerBox, unknown[]>(
+      learnedLens,
+      R.reject(identity),
+      box
+    );
+
+    return addToSection(updatedBox, card);
+  }
+
+  // Search for card in 'lessons'
+  for (let i = 0; i < box.decks.lessons.length; i++) {
+    card = R.view(findInLessonsLens(i), box);
+
+    if (card) {
+      updatedBox = R.over<LeitnerBox, unknown[]>(
+        lessonsLens(i),
+        R.reject(identity),
+        box
+      );
+
+      return addToSection(updatedBox, card);
+    }
+  }
+
+  return box;
+};
+
+export const moveToUnknown = (box: LeitnerBox, identity: CardIdentity) => {
+  return moveToSection(box, identity, addToUnknown);
+};
+
+export const moveToLearned = (box: LeitnerBox, identity: CardIdentity) => {
+  return moveToSection(box, identity, addToLearned);
 };
