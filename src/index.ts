@@ -1,4 +1,9 @@
-import { fib, buildEmptyDecks, buildRepeatLessons } from './utils';
+import {
+  fib,
+  buildEmptyDecks,
+  buildRepeatLessons,
+  lensMatchIdentity
+} from './utils';
 import * as R from 'ramda';
 
 export type integer = number;
@@ -57,6 +62,11 @@ export const createLeitnerBox = ({
   };
 };
 
+const unknownLens = R.lensPath(['decks', 'unknown']);
+const learnedLens = R.lensPath(['decks', 'learned']);
+const lessonsLens = (index: number) =>
+  R.lensPath(['decks', 'lessons', index, 'cards']);
+
 export const setCurrentLesson = (
   box: LeitnerBox,
   currentLesson: number
@@ -69,21 +79,19 @@ export const setCurrentLesson = (
 };
 
 export const addToUnknown = (box: LeitnerBox, card: unknown): LeitnerBox => {
-  const unknownLens = R.lensPath(['decks', 'unknown']);
-
   return R.over<LeitnerBox, unknown[]>(unknownLens, R.append(card), box);
 };
 
 export const addToLearned = (box: LeitnerBox, card: unknown): LeitnerBox => {
-  const learnedLens = R.lensPath(['decks', 'learned']);
-
   return R.over<LeitnerBox, unknown[]>(learnedLens, R.append(card), box);
 };
-
-const lensMatchIdentity = (identity: CardIdentity) =>
-  R.lens(R.find(identity), (val, arr, idx = R.findIndex(identity, arr)) =>
-    R.update(idx > -1 ? idx : R.length(arr), val, arr)
+export const addToLessons = (box: LeitnerBox, card: unknown): LeitnerBox => {
+  return R.over<LeitnerBox, unknown[]>(
+    lessonsLens(box.currentLesson),
+    R.append(card),
+    box
   );
+};
 
 const moveToSection = (
   box: LeitnerBox,
@@ -93,16 +101,10 @@ const moveToSection = (
   let card: unknown;
   let updatedBox: LeitnerBox;
 
-  const unknownLens = R.lensPath(['decks', 'unknown']);
-  const learnedLens = R.lensPath(['decks', 'learned']);
-  const lessonsLens = (index: number) =>
-    R.lensPath(['decks', 'lessons', index, 'cards']);
-
   const findInUnknownLens = R.compose(unknownLens, lensMatchIdentity(identity));
   const findInLearnedLens = R.compose(learnedLens, lensMatchIdentity(identity));
   const findInLessonsLens = (index: number) =>
     R.compose(lessonsLens(index), lensMatchIdentity(identity));
-
   // Search for card in 'unknown'
   card = R.view(findInUnknownLens, box);
 
