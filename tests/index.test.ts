@@ -6,6 +6,7 @@ import {
   createLeitnerBox,
   integer,
   moveToLearned,
+  moveToLessons,
   moveToUnknown,
   setCurrentLesson
 } from '../src';
@@ -294,7 +295,7 @@ describe('API', () => {
   });
 
   describe('moveToUnknown', () => {
-    it('should be able to move card from the "unknown" section', () => {
+    it('should be able to move card from the "unknown" section [not recommended]', () => {
       const identity = (c: unknown) => c === 'a';
       const initialLeitnerBox = createLeitnerBox({
         currentLesson: 0,
@@ -348,7 +349,7 @@ describe('API', () => {
   });
 
   describe('moveToLearned', () => {
-    it('should be able to move card from the "unknown" section', () => {
+    it('should be able to move card from the "unknown" section [not recommended]', () => {
       const identity = (c: unknown) => c === 'a';
       const initialLeitnerBox = createLeitnerBox({
         currentLesson: 0,
@@ -360,7 +361,7 @@ describe('API', () => {
       expect(leitnerBox.decks.learned).toEqual(['a']);
     });
 
-    it('should be able to move card from the "learned" section', () => {
+    it('should be able to move card from the "learned" section [not recommended]', () => {
       const identity = (c: unknown) => c === 'a';
       const initialLeitnerBox = createLeitnerBox({
         currentLesson: 0,
@@ -396,6 +397,65 @@ describe('API', () => {
         repetitions: 1
       });
       const leitnerBox = moveToLearned(initialLeitnerBox, identity);
+
+      expect(leitnerBox).toEqual(initialLeitnerBox);
+    });
+  });
+
+  describe('moveToLessons', () => {
+    it('should be able to move card from the "unknown" section', () => {
+      const identity = (c: unknown) => c === 'a';
+      const initialLeitnerBox = createLeitnerBox({
+        currentLesson: 0,
+        initialDecks: [['a'], [], [], []],
+        repetitions: 1
+      });
+      const leitnerBox = moveToLessons(initialLeitnerBox, identity);
+
+      expect(leitnerBox.decks.unknown).toEqual([]);
+      expect(leitnerBox.decks.lessons[leitnerBox.currentLesson].cards).toEqual([
+        'a'
+      ]);
+    });
+
+    it('should be able to move card from the "learned" section [not recommended]', () => {
+      const identity = (c: unknown) => c === 'a';
+      const initialLeitnerBox = createLeitnerBox({
+        currentLesson: 0,
+        initialDecks: [[], [], [], ['a']],
+        repetitions: 1
+      });
+      const leitnerBox = moveToLessons(initialLeitnerBox, identity);
+
+      expect(leitnerBox.decks.learned).toEqual([]);
+      expect(leitnerBox.decks.lessons[leitnerBox.currentLesson].cards).toEqual([
+        'a'
+      ]);
+    });
+
+    it('should be able to move card from the "lessons" section [not recommended]', () => {
+      const identity = (c: unknown) => c === 'a';
+      const initialLeitnerBox = createLeitnerBox({
+        currentLesson: 0,
+        initialDecks: [[], [], ['a'], []],
+        repetitions: 1
+      });
+      const leitnerBox = moveToLessons(initialLeitnerBox, identity);
+
+      expect(leitnerBox.decks.lessons[1].cards).toEqual([]);
+      expect(leitnerBox.decks.lessons[leitnerBox.currentLesson].cards).toEqual([
+        'a'
+      ]);
+    });
+
+    it("returns the same leitner box if value wasn't found", () => {
+      const identity = (c: unknown) => c === 'b';
+      const initialLeitnerBox = createLeitnerBox({
+        currentLesson: 0,
+        initialDecks: [[], [], ['a'], []],
+        repetitions: 1
+      });
+      const leitnerBox = moveToLessons(initialLeitnerBox, identity);
 
       expect(leitnerBox).toEqual(initialLeitnerBox);
     });

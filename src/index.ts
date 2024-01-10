@@ -85,6 +85,7 @@ export const addToUnknown = (box: LeitnerBox, card: unknown): LeitnerBox => {
 export const addToLearned = (box: LeitnerBox, card: unknown): LeitnerBox => {
   return R.over<LeitnerBox, unknown[]>(learnedLens, R.append(card), box);
 };
+
 export const addToLessons = (box: LeitnerBox, card: unknown): LeitnerBox => {
   return R.over<LeitnerBox, unknown[]>(
     lessonsLens(box.currentLesson),
@@ -105,6 +106,7 @@ const moveToSection = (
   const findInLearnedLens = R.compose(learnedLens, lensMatchIdentity(identity));
   const findInLessonsLens = (index: number) =>
     R.compose(lessonsLens(index), lensMatchIdentity(identity));
+
   // Search for card in 'unknown'
   card = R.view(findInUnknownLens, box);
 
@@ -155,4 +157,8 @@ export const moveToUnknown = (box: LeitnerBox, identity: CardIdentity) => {
 
 export const moveToLearned = (box: LeitnerBox, identity: CardIdentity) => {
   return moveToSection(box, identity, addToLearned);
+};
+
+export const moveToLessons = (box: LeitnerBox, identity: CardIdentity) => {
+  return moveToSection(box, identity, addToLessons);
 };
