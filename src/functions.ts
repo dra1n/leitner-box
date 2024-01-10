@@ -17,11 +17,20 @@ const learnedLens = R.lensPath(['decks', 'learned']);
 const lessonsLens = (index: number) =>
   R.lensPath(['decks', 'lessons', index, 'cards']);
 
-const moveToSection = (
+const addCardTo = (
+  cardLens: R.Lens<LeitnerBox, unknown[]>,
   box: LeitnerBox,
-  identity: CardIdentity,
-  addToSection: (box: LeitnerBox, card: unknown) => LeitnerBox
+  card: unknown
 ): LeitnerBox => {
+  return card
+    ? R.over<LeitnerBox, unknown[]>(cardLens, R.append<unknown>(card), box)
+    : box;
+};
+
+const removeCard = (
+  box: LeitnerBox,
+  identity: CardIdentity
+): [LeitnerBox, unknown] => {
   let card: unknown;
   let updatedBox: LeitnerBox;
 
@@ -40,7 +49,7 @@ const moveToSection = (
       box
     );
 
-    return addToSection(updatedBox, card);
+    return [updatedBox, card];
   }
 
   // Search for card in 'learned'
@@ -53,7 +62,7 @@ const moveToSection = (
       box
     );
 
-    return addToSection(updatedBox, card);
+    return [updatedBox, card];
   }
 
   // Search for card in 'lessons'
@@ -67,11 +76,11 @@ const moveToSection = (
         box
       );
 
-      return addToSection(updatedBox, card);
+      return [updatedBox, card];
     }
   }
 
-  return box;
+  return [box, null];
 };
 
 export const createLeitnerBox = ({
@@ -111,30 +120,11 @@ export const setCurrentLesson = (
   return R.set(currentLessonLens, currentLesson, box);
 };
 
-export const addToUnknown = (box: LeitnerBox, card: unknown): LeitnerBox => {
-  return R.over<LeitnerBox, unknown[]>(unknownLens, R.append(card), box);
-};
+export const addToUnknown = R.partial(addCardTo, [unknownLens]);
+export const addToLearned = R.partial(addCardTo, [learnedLens]);
+export const addToLessons = (box: LeitnerBox, card: unknown): LeitnerBox =>
+  addCardTo(lessonsLens(box.currentLesson), box, card);
 
-export const addToLearned = (box: LeitnerBox, card: unknown): LeitnerBox => {
-  return R.over<LeitnerBox, unknown[]>(learnedLens, R.append(card), box);
-};
-
-export const addToLessons = (box: LeitnerBox, card: unknown): LeitnerBox => {
-  return R.over<LeitnerBox, unknown[]>(
-    lessonsLens(box.currentLesson),
-    R.append(card),
-    box
-  );
-};
-
-export const moveToUnknown = (box: LeitnerBox, identity: CardIdentity) => {
-  return moveToSection(box, identity, addToUnknown);
-};
-
-export const moveToLearned = (box: LeitnerBox, identity: CardIdentity) => {
-  return moveToSection(box, identity, addToLearned);
-};
-
-export const moveToLessons = (box: LeitnerBox, identity: CardIdentity) => {
-  return moveToSection(box, identity, addToLessons);
-};
+export const moveToUnknown = R.pipe(removeCard, R.apply(addToUnknown));
+export const moveToLearned = R.pipe(removeCard, R.apply(addToLearned));
+export const moveToLessons = R.pipe(removeCard, R.apply(addToLessons));

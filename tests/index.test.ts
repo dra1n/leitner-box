@@ -203,6 +203,14 @@ describe('API', () => {
 
       expect(leitnerBox === initialLeitnerBox).toBeFalsy();
     });
+
+    it('does nothing if the card has falsy value', () => {
+      const newCard = null;
+
+      const leitnerBox = addToUnknown(initialLeitnerBox, newCard);
+
+      expect(leitnerBox === initialLeitnerBox).toBeTruthy();
+    });
   });
 
   describe('addToLearned', () => {
@@ -243,6 +251,14 @@ describe('API', () => {
       const leitnerBox = addToLearned(initialLeitnerBox, newCard);
 
       expect(leitnerBox === initialLeitnerBox).toBeFalsy();
+    });
+
+    it('does nothing if the card has falsy value', () => {
+      const newCard = null;
+
+      const leitnerBox = addToLearned(initialLeitnerBox, newCard);
+
+      expect(leitnerBox === initialLeitnerBox).toBeTruthy();
     });
   });
 
@@ -291,6 +307,14 @@ describe('API', () => {
       const leitnerBox = addToLessons(initialLeitnerBox, newCard);
 
       expect(leitnerBox === initialLeitnerBox).toBeFalsy();
+    });
+
+    it('does nothing if the card has falsy value', () => {
+      const newCard = null;
+
+      const leitnerBox = addToLessons(initialLeitnerBox, newCard);
+
+      expect(leitnerBox === initialLeitnerBox).toBeTruthy();
     });
   });
 
