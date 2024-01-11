@@ -27,60 +27,49 @@ const addCardTo = (
     : box;
 };
 
+const findAndRemove = (
+  findLens: R.Lens<LeitnerBox, unknown>,
+  updateLens: R.Lens<LeitnerBox, unknown[]>,
+  identity: CardIdentity,
+  box: LeitnerBox
+): [LeitnerBox, unknown] | null => {
+  const card = R.view(findLens, box);
+
+  return card ? [R.over(updateLens, R.reject(identity), box), card] : null; // Return null when the card is not found
+};
+
+const findAndRemoveInLessons = (
+  findLens: (i: number) => R.Lens<LeitnerBox, unknown>,
+  updateLens: (i: number) => R.Lens<LeitnerBox, unknown[]>,
+  identity: CardIdentity,
+  box: LeitnerBox
+): [LeitnerBox, unknown] | null => {
+  for (let i = 0; i < box.decks.lessons.length; i++) {
+    const result = findAndRemove(findLens(i), updateLens(i), identity, box);
+
+    if (result) {
+      return result;
+    }
+  }
+
+  return null;
+};
+
 const removeCard = (
   box: LeitnerBox,
   identity: CardIdentity
 ): [LeitnerBox, unknown] => {
-  let card: unknown;
-  let updatedBox: LeitnerBox;
-
   const findInUnknownLens = R.compose(unknownLens, lensMatchIdentity(identity));
   const findInLearnedLens = R.compose(learnedLens, lensMatchIdentity(identity));
   const findInLessonsLens = (index: number) =>
     R.compose(lessonsLens(index), lensMatchIdentity(identity));
 
-  // Search for card in 'unknown'
-  card = R.view(findInUnknownLens, box);
+  const result =
+    findAndRemove(findInUnknownLens, unknownLens, identity, box) ||
+    findAndRemove(findInLearnedLens, learnedLens, identity, box) ||
+    findAndRemoveInLessons(findInLessonsLens, lessonsLens, identity, box);
 
-  if (card) {
-    updatedBox = R.over<LeitnerBox, unknown[]>(
-      unknownLens,
-      R.reject(identity),
-      box
-    );
-
-    return [updatedBox, card];
-  }
-
-  // Search for card in 'learned'
-  card = R.view(findInLearnedLens, box);
-
-  if (card) {
-    updatedBox = R.over<LeitnerBox, unknown[]>(
-      learnedLens,
-      R.reject(identity),
-      box
-    );
-
-    return [updatedBox, card];
-  }
-
-  // Search for card in 'lessons'
-  for (let i = 0; i < box.decks.lessons.length; i++) {
-    card = R.view(findInLessonsLens(i), box);
-
-    if (card) {
-      updatedBox = R.over<LeitnerBox, unknown[]>(
-        lessonsLens(i),
-        R.reject(identity),
-        box
-      );
-
-      return [updatedBox, card];
-    }
-  }
-
-  return [box, null];
+  return result || [box, null];
 };
 
 export const createLeitnerBox = ({
