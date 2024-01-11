@@ -2,6 +2,7 @@ export {
   LeitnerBox,
   LeitnerBoxConfig,
   LeitnerDecks,
+  Card,
   CardIdentity,
   integer
 } from './types';

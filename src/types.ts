@@ -1,19 +1,20 @@
 export type integer = number;
+export type Card = unknown;
 
 export interface LeitnerBoxConfig {
   repetitions?: integer;
   currentLesson?: integer;
-  initialDecks?: Array<Array<unknown>>;
+  initialDecks?: Array<Array<Card>>;
 }
 
 export interface LeitnerLesson {
   repeatOn: Array<integer>;
-  cards: Array<unknown>;
+  cards: Array<Card>;
 }
 
 export interface LeitnerDecks {
-  unknown: Array<unknown>;
-  learned: Array<unknown>;
+  unknown: Array<Card>;
+  learned: Array<Card>;
   lessons: Array<LeitnerLesson>;
 }
 
@@ -25,5 +26,5 @@ export interface LeitnerBox {
 }
 
 export interface CardIdentity {
-  (card: unknown): boolean;
+  (card: Card): boolean;
 }

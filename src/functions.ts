@@ -1,9 +1,11 @@
 import * as R from 'ramda';
 import {
+  integer,
   LeitnerBox,
   LeitnerBoxConfig,
   LeitnerDecks,
-  CardIdentity
+  CardIdentity,
+  Card
 } from './types';
 import {
   fib,
@@ -18,32 +20,32 @@ const lessonsLens = (index: number) =>
   R.lensPath(['decks', 'lessons', index, 'cards']);
 
 const addCardTo = (
-  cardLens: R.Lens<LeitnerBox, unknown[]>,
+  cardLens: R.Lens<LeitnerBox, Card[]>,
   box: LeitnerBox,
-  card: unknown
+  card: Card
 ): LeitnerBox => {
   return card
-    ? R.over<LeitnerBox, unknown[]>(cardLens, R.append<unknown>(card), box)
+    ? R.over<LeitnerBox, Card[]>(cardLens, R.append<Card>(card), box)
     : box;
 };
 
 const findAndRemove = (
-  findLens: R.Lens<LeitnerBox, unknown>,
-  updateLens: R.Lens<LeitnerBox, unknown[]>,
+  findLens: R.Lens<LeitnerBox, Card>,
+  updateLens: R.Lens<LeitnerBox, Card[]>,
   identity: CardIdentity,
   box: LeitnerBox
-): [LeitnerBox, unknown] | null => {
+): [LeitnerBox, Card] | null => {
   const card = R.view(findLens, box);
 
   return card ? [R.over(updateLens, R.reject(identity), box), card] : null; // Return null when the card is not found
 };
 
 const findAndRemoveInLessons = (
-  findLens: (i: number) => R.Lens<LeitnerBox, unknown>,
-  updateLens: (i: number) => R.Lens<LeitnerBox, unknown[]>,
+  findLens: (i: number) => R.Lens<LeitnerBox, Card>,
+  updateLens: (i: number) => R.Lens<LeitnerBox, Card[]>,
   identity: CardIdentity,
   box: LeitnerBox
-): [LeitnerBox, unknown] | null => {
+): [LeitnerBox, Card] | null => {
   for (let i = 0; i < box.decks.lessons.length; i++) {
     const result = findAndRemove(findLens(i), updateLens(i), identity, box);
 
@@ -58,7 +60,7 @@ const findAndRemoveInLessons = (
 const removeCard = (
   box: LeitnerBox,
   identity: CardIdentity
-): [LeitnerBox, unknown] => {
+): [LeitnerBox, Card] => {
   const findInUnknownLens = R.compose(unknownLens, lensMatchIdentity(identity));
   const findInLearnedLens = R.compose(learnedLens, lensMatchIdentity(identity));
   const findInLessonsLens = (index: number) =>
@@ -100,7 +102,7 @@ export const createLeitnerBox = ({
 
 export const setCurrentLesson = (
   box: LeitnerBox,
-  currentLesson: number
+  currentLesson: integer
 ): LeitnerBox => {
   const currentLessonLens = R.lensProp<LeitnerBox, 'currentLesson'>(
     'currentLesson'
@@ -111,7 +113,7 @@ export const setCurrentLesson = (
 
 export const addToUnknown = R.partial(addCardTo, [unknownLens]);
 export const addToLearned = R.partial(addCardTo, [learnedLens]);
-export const addToLessons = (box: LeitnerBox, card: unknown): LeitnerBox =>
+export const addToLessons = (box: LeitnerBox, card: Card): LeitnerBox =>
   addCardTo(lessonsLens(box.currentLesson), box, card);
 
 export const moveToUnknown = R.pipe(removeCard, R.apply(addToUnknown));

@@ -1,4 +1,5 @@
 import {
+  Card,
   LeitnerBox,
   addToLearned,
   addToLessons,
@@ -320,7 +321,7 @@ describe('API', () => {
 
   describe('moveToUnknown', () => {
     it('should be able to move card from the "unknown" section [not recommended]', () => {
-      const identity = (c: unknown) => c === 'a';
+      const identity = (c: Card) => c === 'a';
       const initialLeitnerBox = createLeitnerBox({
         currentLesson: 0,
         initialDecks: [['a'], [], [], []],
@@ -332,7 +333,7 @@ describe('API', () => {
     });
 
     it('should be able to move card from the "learned" section', () => {
-      const identity = (c: unknown) => c === 'a';
+      const identity = (c: Card) => c === 'a';
       const initialLeitnerBox = createLeitnerBox({
         currentLesson: 0,
         initialDecks: [[], [], [], ['a']],
@@ -344,7 +345,7 @@ describe('API', () => {
     });
 
     it('should be able to move card from the "lessons" section', () => {
-      const identity = (c: unknown) => c === 'a';
+      const identity = (c: Card) => c === 'a';
       const initialLeitnerBox = createLeitnerBox({
         currentLesson: 0,
         initialDecks: [[], [], ['a'], []],
@@ -360,7 +361,7 @@ describe('API', () => {
     });
 
     it("returns the same leitner box if value wasn't found", () => {
-      const identity = (c: unknown) => c === 'b';
+      const identity = (c: Card) => c === 'b';
       const initialLeitnerBox = createLeitnerBox({
         currentLesson: 0,
         initialDecks: [[], [], ['a'], []],
@@ -374,7 +375,7 @@ describe('API', () => {
 
   describe('moveToLearned', () => {
     it('should be able to move card from the "unknown" section [not recommended]', () => {
-      const identity = (c: unknown) => c === 'a';
+      const identity = (c: Card) => c === 'a';
       const initialLeitnerBox = createLeitnerBox({
         currentLesson: 0,
         initialDecks: [['a'], [], [], []],
@@ -386,7 +387,7 @@ describe('API', () => {
     });
 
     it('should be able to move card from the "learned" section [not recommended]', () => {
-      const identity = (c: unknown) => c === 'a';
+      const identity = (c: Card) => c === 'a';
       const initialLeitnerBox = createLeitnerBox({
         currentLesson: 0,
         initialDecks: [[], [], [], ['a']],
@@ -398,7 +399,7 @@ describe('API', () => {
     });
 
     it('should be able to move card from the "lessons" section', () => {
-      const identity = (c: unknown) => c === 'a';
+      const identity = (c: Card) => c === 'a';
       const initialLeitnerBox = createLeitnerBox({
         currentLesson: 0,
         initialDecks: [[], [], ['a'], []],
@@ -414,7 +415,7 @@ describe('API', () => {
     });
 
     it("returns the same leitner box if value wasn't found", () => {
-      const identity = (c: unknown) => c === 'b';
+      const identity = (c: Card) => c === 'b';
       const initialLeitnerBox = createLeitnerBox({
         currentLesson: 0,
         initialDecks: [[], [], ['a'], []],
@@ -428,7 +429,7 @@ describe('API', () => {
 
   describe('moveToLessons', () => {
     it('should be able to move card from the "unknown" section', () => {
-      const identity = (c: unknown) => c === 'a';
+      const identity = (c: Card) => c === 'a';
       const initialLeitnerBox = createLeitnerBox({
         currentLesson: 0,
         initialDecks: [['a'], [], [], []],
@@ -443,7 +444,7 @@ describe('API', () => {
     });
 
     it('should be able to move card from the "learned" section [not recommended]', () => {
-      const identity = (c: unknown) => c === 'a';
+      const identity = (c: Card) => c === 'a';
       const initialLeitnerBox = createLeitnerBox({
         currentLesson: 0,
         initialDecks: [[], [], [], ['a']],
@@ -458,7 +459,7 @@ describe('API', () => {
     });
 
     it('should be able to move card from the "lessons" section [not recommended]', () => {
-      const identity = (c: unknown) => c === 'a';
+      const identity = (c: Card) => c === 'a';
       const initialLeitnerBox = createLeitnerBox({
         currentLesson: 0,
         initialDecks: [[], [], ['a'], []],
@@ -473,7 +474,7 @@ describe('API', () => {
     });
 
     it("returns the same leitner box if value wasn't found", () => {
-      const identity = (c: unknown) => c === 'b';
+      const identity = (c: Card) => c === 'b';
       const initialLeitnerBox = createLeitnerBox({
         currentLesson: 0,
         initialDecks: [[], [], ['a'], []],
