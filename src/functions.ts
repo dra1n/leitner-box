@@ -111,6 +111,20 @@ export const setCurrentLesson = (
   return R.set(currentLessonLens, currentLesson, box);
 };
 
+export const getCardsForLesson = (
+  box: LeitnerBox,
+  lesson: integer
+): Array<Card> => {
+  return box.decks.lessons.reduce<Array<Card>>(
+    (result, { repeatOn, cards }) =>
+      repeatOn.includes(lesson) ? [...result, ...cards] : result,
+    []
+  );
+};
+
+export const getCardsForCurrentLesson = (box: LeitnerBox): Array<Card> =>
+  getCardsForLesson(box, box.currentLesson);
+
 export const addToUnknown = R.partial(addCardTo, [unknownLens]);
 export const addToLearned = R.partial(addCardTo, [learnedLens]);
 export const addToLessons = (box: LeitnerBox, card: Card): LeitnerBox =>

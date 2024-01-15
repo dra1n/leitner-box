@@ -11,6 +11,7 @@ import {
   moveToUnknown,
   setCurrentLesson
 } from '../src';
+import { getCardsForCurrentLesson, getCardsForLesson } from '../src/functions';
 
 describe('API', () => {
   describe('createLeitnerBox', () => {
@@ -162,6 +163,114 @@ describe('API', () => {
       const leitnerBox = setCurrentLesson(initialLeitnerBox, 4);
 
       expect(leitnerBox === initialLeitnerBox).toBeFalsy();
+    });
+  });
+
+  describe('getCardsForLesson', () => {
+    it('return cards collection for the given lesson', () => {
+      const leitnerBox = createLeitnerBox({
+        currentLesson: 0,
+        initialDecks: [[], [], ['a'], [], []],
+        repetitions: 1
+      });
+
+      // leitnerBox.decks.lessons):
+      //
+      // [
+      //   { repeatOn: [2], cards: [] },
+      //   { repeatOn: [0], cards: ['a'] },
+      //   { repeatOn: [1], cards: [] }
+      // ]
+      expect(getCardsForLesson(leitnerBox, 0)).toEqual(['a']);
+    });
+
+    it('works for multiple repetitions', () => {
+      const leitnerBox = createLeitnerBox({
+        currentLesson: 0,
+        initialDecks: [[], [], ['a'], [], []],
+        repetitions: 2
+      });
+
+      // leitnerBox.decks.lessons):
+      //
+      // [
+      //   { repeatOn: [2, 5], cards: [] },
+      //   { repeatOn: [3, 0], cards: ['a'] },
+      //   { repeatOn: [4, 1], cards: [] }
+      // ]
+      expect(getCardsForLesson(leitnerBox, 0)).toEqual(['a']);
+      expect(getCardsForLesson(leitnerBox, 3)).toEqual(['a']);
+      expect(getCardsForLesson(leitnerBox, 1)).toEqual([]);
+    });
+
+    it('return returns empty collection if the asked lesson is empty', () => {
+      const leitnerBox = createLeitnerBox({
+        currentLesson: 0,
+        initialDecks: [[], [], ['a'], [], []],
+        repetitions: 1
+      });
+
+      // leitnerBox.decks.lessons):
+      //
+      // [
+      //   { repeatOn: [2], cards: [] },
+      //   { repeatOn: [0], cards: ['a'] },
+      //   { repeatOn: [1], cards: [] }
+      // ]
+      expect(getCardsForLesson(leitnerBox, 1)).toEqual([]);
+    });
+  });
+
+  describe('getCardsForCurrentLesson', () => {
+    it('return cards collection for the current lesson', () => {
+      const leitnerBox = createLeitnerBox({
+        currentLesson: 0,
+        initialDecks: [[], [], ['a'], [], []],
+        repetitions: 1
+      });
+
+      // leitnerBox.decks.lessons):
+      //
+      // [
+      //   { repeatOn: [2], cards: [] },
+      //   { repeatOn: [0], cards: ['a'] },
+      //   { repeatOn: [1], cards: [] }
+      // ]
+      expect(getCardsForCurrentLesson(leitnerBox)).toEqual(['a']);
+    });
+
+    it('works for multiple repetitions', () => {
+      const leitnerBox = createLeitnerBox({
+        currentLesson: 0,
+        initialDecks: [[], [], ['a'], [], []],
+        repetitions: 2
+      });
+
+      // leitnerBox.decks.lessons):
+      //
+      // [
+      //   { repeatOn: [2, 5], cards: [] },
+      //   { repeatOn: [3, 0], cards: ['a'] },
+      //   { repeatOn: [4, 1], cards: [] }
+      // ]
+      expect(getCardsForCurrentLesson(leitnerBox)).toEqual(['a']);
+    });
+
+    it('return returns empty collection if the asked lesson is empty', () => {
+      const leitnerBox = createLeitnerBox({
+        currentLesson: 0,
+        initialDecks: [[], [], [], ['a'], []],
+        repetitions: 1
+      });
+
+      // leitnerBox.decks.lessons):
+      //
+      // [
+      //   { repeatOn: [2], cards: [] },
+      //   { repeatOn: [0], cards: [] },
+      //   { repeatOn: [1], cards: ['a'] }
+      // ]
+      expect(getCardsForCurrentLesson(leitnerBox)).toEqual([]);
     });
   });
 
