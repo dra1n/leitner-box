@@ -295,7 +295,7 @@ describe('API', () => {
     it('adds a card to the end of the unknown list', () => {
       initialLeitnerBox = createLeitnerBox({
         currentLesson: 0,
-        initialDecks: [['a'], [], [], []],
+        initialDecks: [['a'], [], [], [], []],
         repetitions: 1
       });
 
@@ -344,7 +344,7 @@ describe('API', () => {
     it('adds a card to the end of the learned list', () => {
       initialLeitnerBox = createLeitnerBox({
         currentLesson: 0,
-        initialDecks: [[], [], [], ['a']],
+        initialDecks: [[], [], [], [], ['a']],
         repetitions: 1
       });
 
@@ -397,7 +397,7 @@ describe('API', () => {
     it('adds a card to the end of the lesson box', () => {
       initialLeitnerBox = createLeitnerBox({
         currentLesson,
-        initialDecks: [[], [], ['a'], []],
+        initialDecks: [[], [], ['a'], [], []],
         repetitions: 1
       });
 
@@ -433,7 +433,7 @@ describe('API', () => {
       const identity = (c: Card) => c === 'a';
       const initialLeitnerBox = createLeitnerBox({
         currentLesson: 0,
-        initialDecks: [['a'], [], [], []],
+        initialDecks: [['a'], [], [], [], []],
         repetitions: 1
       });
       const leitnerBox = moveToUnknown(initialLeitnerBox, identity);
@@ -445,7 +445,7 @@ describe('API', () => {
       const identity = (c: Card) => c === 'a';
       const initialLeitnerBox = createLeitnerBox({
         currentLesson: 0,
-        initialDecks: [[], [], [], ['a']],
+        initialDecks: [[], [], [], [], ['a']],
         repetitions: 1
       });
       const leitnerBox = moveToUnknown(initialLeitnerBox, identity);
@@ -457,7 +457,7 @@ describe('API', () => {
       const identity = (c: Card) => c === 'a';
       const initialLeitnerBox = createLeitnerBox({
         currentLesson: 0,
-        initialDecks: [[], [], ['a'], []],
+        initialDecks: [[], [], ['a'], [], []],
         repetitions: 1
       });
       const leitnerBox = moveToUnknown(initialLeitnerBox, identity);
@@ -473,7 +473,7 @@ describe('API', () => {
       const identity = (c: Card) => c === 'b';
       const initialLeitnerBox = createLeitnerBox({
         currentLesson: 0,
-        initialDecks: [[], [], ['a'], []],
+        initialDecks: [[], [], ['a'], [], []],
         repetitions: 1
       });
       const leitnerBox = moveToUnknown(initialLeitnerBox, identity);
@@ -487,7 +487,7 @@ describe('API', () => {
       const identity = (c: Card) => c === 'a';
       const initialLeitnerBox = createLeitnerBox({
         currentLesson: 0,
-        initialDecks: [['a'], [], [], []],
+        initialDecks: [['a'], [], [], [], []],
         repetitions: 1
       });
       const leitnerBox = moveToLearned(initialLeitnerBox, identity);
@@ -499,7 +499,7 @@ describe('API', () => {
       const identity = (c: Card) => c === 'a';
       const initialLeitnerBox = createLeitnerBox({
         currentLesson: 0,
-        initialDecks: [[], [], [], ['a']],
+        initialDecks: [[], [], [], [], ['a']],
         repetitions: 1
       });
       const leitnerBox = moveToLearned(initialLeitnerBox, identity);
@@ -511,7 +511,7 @@ describe('API', () => {
       const identity = (c: Card) => c === 'a';
       const initialLeitnerBox = createLeitnerBox({
         currentLesson: 0,
-        initialDecks: [[], [], ['a'], []],
+        initialDecks: [[], [], ['a'], [], []],
         repetitions: 1
       });
       const leitnerBox = moveToLearned(initialLeitnerBox, identity);
@@ -527,7 +527,7 @@ describe('API', () => {
       const identity = (c: Card) => c === 'b';
       const initialLeitnerBox = createLeitnerBox({
         currentLesson: 0,
-        initialDecks: [[], [], ['a'], []],
+        initialDecks: [[], [], ['a'], [], []],
         repetitions: 1
       });
       const leitnerBox = moveToLearned(initialLeitnerBox, identity);
@@ -541,7 +541,7 @@ describe('API', () => {
       const identity = (c: Card) => c === 'a';
       const initialLeitnerBox = createLeitnerBox({
         currentLesson: 0,
-        initialDecks: [['a'], [], [], []],
+        initialDecks: [['a'], [], [], [], []],
         repetitions: 1
       });
       const leitnerBox = moveToLessons(initialLeitnerBox, identity);
@@ -556,7 +556,7 @@ describe('API', () => {
       const identity = (c: Card) => c === 'a';
       const initialLeitnerBox = createLeitnerBox({
         currentLesson: 0,
-        initialDecks: [[], [], [], ['a']],
+        initialDecks: [[], [], [], [], ['a']],
         repetitions: 1
       });
       const leitnerBox = moveToLessons(initialLeitnerBox, identity);
@@ -571,7 +571,7 @@ describe('API', () => {
       const identity = (c: Card) => c === 'a';
       const initialLeitnerBox = createLeitnerBox({
         currentLesson: 0,
-        initialDecks: [[], [], ['a'], []],
+        initialDecks: [[], [], ['a'], [], []],
         repetitions: 1
       });
       const leitnerBox = moveToLessons(initialLeitnerBox, identity);
@@ -586,7 +586,7 @@ describe('API', () => {
       const identity = (c: Card) => c === 'b';
       const initialLeitnerBox = createLeitnerBox({
         currentLesson: 0,
-        initialDecks: [[], [], ['a'], []],
+        initialDecks: [[], [], ['a'], [], []],
         repetitions: 1
       });
       const leitnerBox = moveToLessons(initialLeitnerBox, identity);
