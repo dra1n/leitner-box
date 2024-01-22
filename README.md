@@ -81,4 +81,4 @@ cards.forEach(card => {
 });
 ```
 
-For more examples please consider looking into specs
+For more examples please consider looking into [specs](https://github.com/dra1n/leitner-box/blob/main/tests/index.test.ts)
