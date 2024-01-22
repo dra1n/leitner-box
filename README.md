@@ -1,6 +1,6 @@
 # leitner-box
 
-This library implements a data-structure that supports the next worflow (taken from [wikipedia](https://en.wikipedia.org/wiki/Leitner_system))
+This library implements a data-structure that supports the next workflow (taken from [wikipedia](https://en.wikipedia.org/wiki/Leitner_system))
 
 > With this method, there are 12 boxes. One is the Current Deck, one is the Retired Deck, and the remaining 10 boxes are named with these numbers:
 > 
