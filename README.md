@@ -33,6 +33,8 @@ This library implements a data-structure that supports the next workflow (taken 
 
 ## Usage
 
+Basic flow might look something like this
+
 ```js
 export {
   addToUnknown,
