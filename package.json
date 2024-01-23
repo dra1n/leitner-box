@@ -4,6 +4,10 @@
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/dra1n/leitner-box.git"
+  },
   "scripts": {
     "build": "tsc",
     "dev": "yarn build --watch --preserveWatchOutput",
