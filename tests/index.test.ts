@@ -9,6 +9,7 @@ import {
   moveToLearned,
   moveToLessons,
   moveToUnknown,
+  isLastLessonForCard,
   getCurrentLesson,
   setCurrentLesson,
   getCardsForCurrentLesson,
@@ -165,6 +166,54 @@ describe('API', () => {
       const leitnerBox = setCurrentLesson(initialLeitnerBox, 4);
 
       expect(leitnerBox === initialLeitnerBox).toBeFalsy();
+    });
+  });
+
+  describe('isLastLessonForCard', () => {
+    it('returns true if this is the last repetition for the card', () => {
+      const initialDecks = [
+        ['unk', 'nown'],
+        ['a', 'b'],
+        ['c', 'd'],
+        [],
+        [],
+        ['e'],
+        ['f', 'g'],
+        ['lea', 'rnd']
+      ];
+      const leitnerBox = createLeitnerBox({
+        initialDecks,
+        currentLesson: 5,
+        repetitions: 2
+      });
+      const cardIdentity = (card: Card) => card === 'a';
+      const cardsForRepetition = getCardsForCurrentLesson(leitnerBox);
+
+      expect(cardsForRepetition).toContain('a');
+      expect(isLastLessonForCard(leitnerBox, cardIdentity)).toEqual(true);
+    });
+
+    it('returns false if this is not the last repetition for the card', () => {
+      const initialDecks = [
+        ['unk', 'nown'],
+        ['a', 'b'],
+        ['c', 'd'],
+        [],
+        [],
+        ['e'],
+        ['f', 'g'],
+        ['lea', 'rnd']
+      ];
+      const leitnerBox = createLeitnerBox({
+        initialDecks,
+        currentLesson: 2,
+        repetitions: 2
+      });
+      const cardIdentity = (card: Card) => card === 'a';
+      const cardsForRepetition = getCardsForCurrentLesson(leitnerBox);
+
+      expect(cardsForRepetition).toContain('a');
+      expect(isLastLessonForCard(leitnerBox, cardIdentity)).toEqual(false);
     });
   });
 
