@@ -30,3 +30,9 @@ export const lensMatchIdentity = (identity: (arg: unknown) => boolean) =>
   R.lens(R.find(identity), (val, arr, idx = R.findIndex(identity, arr)) =>
     R.update(idx > -1 ? idx : R.length(arr), val, arr)
   );
+
+export const assert = (condition: boolean, message: string) => {
+  if (!condition) {
+    throw new Error(message);
+  }
+};

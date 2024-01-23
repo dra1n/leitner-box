@@ -15,5 +15,9 @@ export {
   moveToLearned,
   moveToLessons,
   moveToUnknown,
-  setCurrentLesson
+  isLastLessonForCard,
+  getCurrentLesson,
+  setCurrentLesson,
+  getCardsForCurrentLesson,
+  getCardsForLesson
 } from './functions';

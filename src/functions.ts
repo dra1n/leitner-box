@@ -5,9 +5,11 @@ import {
   LeitnerBoxConfig,
   LeitnerDecks,
   CardIdentity,
-  Card
+  Card,
+  LeitnerLesson
 } from './types';
 import {
+  assert,
   fib,
   buildEmptyDecks,
   buildRepeatLessons,
@@ -83,6 +85,11 @@ export const createLeitnerBox = ({
   const repeatOn = buildRepeatLessons(count, repetitions);
   const rawWorkingDecks = initialDecks || buildEmptyDecks(count);
 
+  assert(
+    rawWorkingDecks.length === count + 2,
+    `Initial decks number doesn't fit repetitions count. Must be ${count + 2}`
+  );
+
   const decks: LeitnerDecks = {
     unknown: rawWorkingDecks[0],
     learned: rawWorkingDecks[rawWorkingDecks.length - 1],
@@ -100,6 +107,8 @@ export const createLeitnerBox = ({
   };
 };
 
+export const getCurrentLesson = (box: LeitnerBox): integer => box.currentLesson;
+
 export const setCurrentLesson = (
   box: LeitnerBox,
   currentLesson: integer
@@ -109,6 +118,17 @@ export const setCurrentLesson = (
   );
 
   return R.set(currentLessonLens, currentLesson, box);
+};
+
+export const isLastLessonForCard = (
+  box: LeitnerBox,
+  identity: CardIdentity
+): boolean => {
+  const { cards } = box.decks.lessons.find(
+    ({ repeatOn }) => repeatOn[repeatOn.length - 1] === box.currentLesson
+  ) as LeitnerLesson;
+
+  return cards.some(identity);
 };
 
 export const getCardsForLesson = (box: LeitnerBox, lesson: integer): Card[] => {

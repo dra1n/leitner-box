@@ -9,9 +9,11 @@ import {
   moveToLearned,
   moveToLessons,
   moveToUnknown,
-  setCurrentLesson
+  getCurrentLesson,
+  setCurrentLesson,
+  getCardsForCurrentLesson,
+  getCardsForLesson
 } from '../src';
-import { getCardsForCurrentLesson, getCardsForLesson } from '../src/functions';
 
 describe('API', () => {
   describe('createLeitnerBox', () => {
@@ -166,6 +168,17 @@ describe('API', () => {
     });
   });
 
+  describe('getCurrentLesson', () => {
+    it('returns current lesson', () => {
+      const leitnerBox = createLeitnerBox({
+        currentLesson: 1,
+        repetitions: 3
+      });
+
+      expect(getCurrentLesson(leitnerBox)).toEqual(1);
+    });
+  });
+
   describe('getCardsForLesson', () => {
     it('return cards collection for the given lesson', () => {
       const leitnerBox = createLeitnerBox({
@@ -187,7 +200,7 @@ describe('API', () => {
     it('works for multiple repetitions', () => {
       const leitnerBox = createLeitnerBox({
         currentLesson: 0,
-        initialDecks: [[], [], ['a'], [], []],
+        initialDecks: [[], [], ['a'], [], [], [], [], []],
         repetitions: 2
       });
 
@@ -242,7 +255,7 @@ describe('API', () => {
     it('works for multiple repetitions', () => {
       const leitnerBox = createLeitnerBox({
         currentLesson: 0,
-        initialDecks: [[], [], ['a'], [], []],
+        initialDecks: [[], [], ['a'], [], [], [], [], []],
         repetitions: 2
       });
 
