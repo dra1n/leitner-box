@@ -82,3 +82,11 @@ cards.forEach(card => {
 ```
 
 For more examples please consider looking into [specs](https://github.com/dra1n/leitner-box/blob/main/tests/index.test.ts)
+
+## Development notes
+
+To create a new version do the following steps
+
+* Bump version in package.json
+* Crate a new tag (for example `git tag v1.0.10`)
+* Push tags into origin `git push origin --tags`
