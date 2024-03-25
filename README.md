@@ -68,14 +68,14 @@ cards.forEach(card => {
 cards = getCardsForCurrentLesson(leitnerBox);
 
 // and at some point switch current lesson
-leitnerBox = setCurrentLesson((getCurrentLesson(box) + 1) % 9);
+leitnerBox = setCurrentLesson(leitnerBox, (getCurrentLesson(leitnerBox) + 1) % 9);
 
 // at the end we might want to put cards into "learned" box
 // make sure to check if this is the last repetition for the card
 cards.forEach(card => {
   const identity = ({ word }) => word === card.word;
 
-  if (isLastLessonForCard(box, identity)) {
+  if (isLastLessonForCard(leitnerBox, identity)) {
     leitnerBox = moveToLearned(leitnerBox, identity);
   }
 });
