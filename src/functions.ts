@@ -6,7 +6,8 @@ import {
   LeitnerDecks,
   CardIdentity,
   Card,
-  LeitnerLesson
+  LeitnerLesson,
+  CardInfo
 } from './types';
 import {
   assert,
@@ -137,6 +138,46 @@ export const getCardsForLesson = (box: LeitnerBox, lesson: integer): Card[] => {
       repeatOn.includes(lesson) ? [...result, ...cards] : result,
     []
   );
+};
+
+export const getCardInfo = (
+  box: LeitnerBox,
+  identity: CardIdentity
+): CardInfo => {
+  const findInUnknownLens = R.compose(unknownLens, lensMatchIdentity(identity));
+  const findInLearnedLens = R.compose(learnedLens, lensMatchIdentity(identity));
+
+  if (R.view(findInUnknownLens, box)) {
+    return {
+      deck: 'unknown'
+    };
+  }
+
+  if (R.view(findInLearnedLens, box)) {
+    return {
+      deck: 'learned'
+    };
+  }
+
+  const currentLesson = getCurrentLesson(box);
+
+  for (let i = 0; i < box.decks.lessons.length; i++) {
+    const { repeatOn, cards } = box.decks.lessons[i];
+    const cardIndex = cards.findIndex(identity);
+
+    if (cardIndex !== -1) {
+      return {
+        deck: 'lessons',
+        repetitionsLeft: repeatOn.slice(
+          repeatOn.findIndex((l) => l >= currentLesson)
+        ).length
+      };
+    }
+  }
+
+  return {
+    deck: 'undefined'
+  };
 };
 
 export const getCardsForCurrentLesson = (box: LeitnerBox): Card[] =>

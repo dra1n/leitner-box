@@ -4,6 +4,7 @@ export {
   LeitnerDecks,
   Card,
   CardIdentity,
+  CardInfo,
   integer
 } from './types';
 
@@ -16,6 +17,7 @@ export {
   moveToLessons,
   moveToUnknown,
   isLastLessonForCard,
+  getCardInfo,
   getCurrentLesson,
   setCurrentLesson,
   getCardsForCurrentLesson,

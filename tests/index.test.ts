@@ -15,6 +15,7 @@ import {
   getCardsForCurrentLesson,
   getCardsForLesson
 } from '../src';
+import { getCardInfo } from '../src/functions';
 
 describe('API', () => {
   describe('createLeitnerBox', () => {
@@ -280,6 +281,136 @@ describe('API', () => {
       //   { repeatOn: [1], cards: [] }
       // ]
       expect(getCardsForLesson(leitnerBox, 1)).toEqual([]);
+    });
+  });
+
+  describe('getCardInfo', () => {
+    it('returns "unknown" deck info if card is in "unknown" section', () => {
+      let leitnerBox = createLeitnerBox({
+        currentLesson: 0,
+        repetitions: 2
+      });
+
+      leitnerBox = addToUnknown(leitnerBox, 'a');
+
+      expect(getCardInfo(leitnerBox, (c) => c === 'a')).toEqual(
+        expect.objectContaining({
+          deck: 'unknown'
+        })
+      );
+
+      // leitnerBox.decks.lessons):
+      //
+      // [
+      //   { repeatOn: [2, 5], cards: [] },
+      //   { repeatOn: [3, 0], cards: ['a'] },
+      //   { repeatOn: [4, 1], cards: [] }
+      // ]
+      // expect(getCardsForCurrentLesson(leitnerBox)).toEqual(['a']);
+    });
+
+    it('returns "learned" deck info if card is in "learned" section', () => {
+      let leitnerBox = createLeitnerBox({
+        currentLesson: 0,
+        repetitions: 2
+      });
+
+      leitnerBox = addToLearned(leitnerBox, 'a');
+
+      expect(getCardInfo(leitnerBox, (c) => c === 'a')).toEqual(
+        expect.objectContaining({
+          deck: 'learned'
+        })
+      );
+    });
+
+    it('returns "lessons" deck info if card is in "lessons" section', () => {
+      let leitnerBox = createLeitnerBox({
+        currentLesson: 0,
+        repetitions: 2
+      });
+
+      leitnerBox = addToLessons(leitnerBox, 'a');
+
+      expect(getCardInfo(leitnerBox, (c) => c === 'a')).toEqual(
+        expect.objectContaining({
+          deck: 'lessons'
+        })
+      );
+    });
+
+    it('returns the number of repetitions left for a lesson', () => {
+      let leitnerBox = createLeitnerBox({
+        currentLesson: 0,
+        repetitions: 2
+      });
+
+      leitnerBox = addToLessons(leitnerBox, 'a');
+
+      // leitnerBox.decks.lessons):
+      //
+      // [
+      //   { repeatOn: [ 2, 5 ], cards: [ 'a' ] },
+      //   { repeatOn: [ 3, 0 ], cards: [] },
+      //   ...
+      // ]
+
+      expect(getCardInfo(leitnerBox, (c) => c === 'a')).toEqual(
+        expect.objectContaining({
+          deck: 'lessons',
+          repetitionsLeft: 2
+        })
+      );
+    });
+
+    it('takes into account current lesson when returns number of repetitions left', () => {
+      let leitnerBox = createLeitnerBox({
+        currentLesson: 0,
+        repetitions: 2
+      });
+
+      leitnerBox = addToLessons(leitnerBox, 'a');
+      leitnerBox = setCurrentLesson(leitnerBox, 3);
+
+      // leitnerBox.decks.lessons):
+      //
+      // [
+      //   { repeatOn: [ 2, 5 ], cards: [ 'a' ] },
+      //   { repeatOn: [ 3, 0 ], cards: [] },
+      //   ...
+      // ]
+
+      expect(getCardInfo(leitnerBox, (c) => c === 'a')).toEqual(
+        expect.objectContaining({
+          deck: 'lessons',
+          repetitionsLeft: 1
+        })
+      );
+    });
+
+    it('returns 1 if this is the last lesson for a card', () => {
+      let leitnerBox = createLeitnerBox({
+        currentLesson: 0,
+        repetitions: 2
+      });
+
+      leitnerBox = addToLessons(leitnerBox, 'a');
+      leitnerBox = setCurrentLesson(leitnerBox, 5);
+
+      // leitnerBox.decks.lessons):
+      //
+      // [
+      //   { repeatOn: [ 2, 5 ], cards: [ 'a' ] },
+      //   { repeatOn: [ 3, 0 ], cards: [] },
+      //   ...
+      // ]
+
+      expect(getCardInfo(leitnerBox, (c) => c === 'a')).toEqual(
+        expect.objectContaining({
+          deck: 'lessons',
+          repetitionsLeft: 1
+        })
+      );
     });
   });
 

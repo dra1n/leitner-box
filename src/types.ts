@@ -28,3 +28,8 @@ export interface LeitnerBox {
 export interface CardIdentity {
   (card: Card): boolean;
 }
+
+export interface CardInfo {
+  deck: 'unknown' | 'learned' | 'lessons' | 'undefined';
+  repetitionsLeft?: number;
+}
