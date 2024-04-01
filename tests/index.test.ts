@@ -12,10 +12,10 @@ import {
   isLastLessonForCard,
   getCurrentLesson,
   setCurrentLesson,
+  getCardInfo,
   getCardsForCurrentLesson,
   getCardsForLesson
 } from '../src';
-import { getCardInfo } from '../src/functions';
 
 describe('API', () => {
   describe('createLeitnerBox', () => {
